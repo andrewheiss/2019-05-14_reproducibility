@@ -1,0 +1,6 @@
+install.packages("tidyverse")
+install.packages("rmarkdown")
+install.packages("knitr")
+install.packages("ggridges")
+install.packages("here")
+install.packages("huxtable")

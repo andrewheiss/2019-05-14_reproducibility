@@ -1,0 +1,29 @@
+name: "provo-weather"
+navbar:
+  title: "Provo weather"
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "Overview of project"
+      href: 01_overview.html
+    - text: "Data processing"
+      href: 02_process-data.html
+    - text: "Weather analysis"
+      href: 03_analyze-weather.html
+output:
+  html_document:
+    theme: journal
+    highlight: pygments
+    code_folding: hide
+    code_download: yes
+    toc: yes
+    toc_float:
+      collapsed: no
+      smooth_scroll: yes
+    toc_depth: 4
+    fig_height: 4
+    fig_width: 6
+    lib_dir: site_libs
+    self_contained: no
+output_dir: _site
+new_session: true

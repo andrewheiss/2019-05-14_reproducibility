@@ -1,0 +1,15 @@
+# R stuff
+.Rproj.user
+.Rhistory
+.RData
+
+# renv stuff
+07_renv/renv/library/*
+
+# R Markdown stuff
+_site/
+
+# Output and data
+*.rds
+*.html
+

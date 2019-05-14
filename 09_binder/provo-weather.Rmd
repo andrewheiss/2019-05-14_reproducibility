@@ -1,0 +1,118 @@
+---
+title: "Provo weather"
+output: html_document
+---
+
+```{r load-libraries, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(lubridate)
+library(ggridges)
+library(broom)
+library(huxtable)
+library(scales)
+library(here)
+
+# Load graphics functions
+source(here("lib", "graphics.R"))
+
+# Make the randomness reproducible
+set.seed(1234)
+```
+
+
+```{r load-data, message=FALSE}
+weather_provo_raw <- read_csv(here("data", "provo_weather_2017.csv"))
+
+weather_provo_2017 <- weather_provo_raw %>% 
+  mutate(Month = month(date, label = TRUE, abbr = FALSE),
+         Day = wday(date, label = TRUE, abbr = FALSE)) %>% 
+  mutate(humidity_scaled = humidity * 100,
+         moonPhase_scaled = moonPhase * 100,
+         precipProbability_scaled = precipProbability * 100,
+         cloudCover_scaled = cloudCover * 100)
+```
+
+# Monthly temperatures with density plots
+
+This plot is neat, but it's not going in the final report because it's too hard to make comparisons across months.
+
+```{r}
+ggplot(weather_provo_2017, 
+       aes(x = temperatureHigh, fill = Month)) +
+  geom_density() +
+  scale_fill_viridis_d(option = "plasma", guide = FALSE) +
+  facet_wrap(~ Month) +
+  labs(x = "Daily high temperature", y = NULL) +
+  theme_weather()
+```
+
+This might be easier to read with ridgeplots:
+
+```{r}
+ggplot(weather_provo_2017, 
+       aes(x = temperatureHigh, y = fct_rev(Month), fill = ..x..)) +
+  geom_density_ridges_gradient(scale = 5, quantile_lines = TRUE, quantiles = 2) + 
+  scale_fill_viridis_c(option = "plasma", name = "Temp") +
+  labs(x = "Daily high temperature", y = NULL) +
+  theme_weather()
+```
+
+
+# Model Provo temperature
+
+```{r build-models}
+model1 <- lm(temperatureHigh ~ humidity_scaled + moonPhase_scaled + 
+               precipProbability_scaled + windSpeed + pressure + cloudCover_scaled,
+             data = weather_provo_2017)
+
+model2 <- lm(temperatureHigh ~ windSpeed + pressure + cloudCover_scaled,
+             data = weather_provo_2017)
+```
+
+
+```{r}
+huxreg(model1, model2)
+```
+
+# Predictions
+
+Does cloud cover in May have an effect on high temperatures?
+
+```{r}
+monthly_averages <- weather_provo_2017 %>% 
+  group_by(Month) %>% 
+  summarize_if(is.numeric, mean, na.rm = TRUE)
+
+may_avg <- monthly_averages %>% filter(Month == "May")
+
+newdata_clouds <- tibble(windSpeed = may_avg$windSpeed,
+                         pressure = may_avg$pressure,
+                         precipProbability_scaled = may_avg$precipProbability_scaled,
+                         moonPhase_scaled = may_avg$moonPhase_scaled,
+                         humidity_scaled = may_avg$humidity_scaled,
+                         cloudCover_scaled = seq(0, 100, by = 1))
+
+# Calculate confidence intervals and scale cloud cover back down to 0-1 instead
+# of 0-100 so we can use scale_x_continuous(labels = percent)
+predicted_highs_clouds_1 <- augment(model1, newdata = newdata_clouds) %>% 
+  mutate(model = "Model 1")
+predicted_highs_clouds_2 <- augment(model2, newdata = newdata_clouds) %>% 
+  mutate(model = "Model 2")
+
+predicted_highs_clouds <- bind_rows(predicted_highs_clouds_1, 
+                                    predicted_highs_clouds_2) %>% 
+  mutate(conf.low = .fitted + (-1.96 * .se.fit),
+         conf.high = .fitted + (1.96 * .se.fit)) %>% 
+  mutate(cloudCover = cloudCover_scaled / 100) %>% 
+  mutate(model = factor(model))
+
+ggplot(predicted_highs_clouds, aes(x = cloudCover, y = .fitted)) +
+  geom_ribbon(aes(fill = model, ymin = conf.low, ymax = conf.high),
+              alpha = 0.3) + 
+  geom_line(aes(color = model), size = 1) +
+  scale_x_continuous(labels = percent) +
+  scale_color_viridis_d(option = "plasma", end = 0.8, name = NULL) +
+  scale_fill_viridis_d(option = "plasma", end = 0.8, name = NULL) +
+  labs(x = "Cloud cover", y = "Predicted high temperature (F)") +
+  theme_weather()
+```
