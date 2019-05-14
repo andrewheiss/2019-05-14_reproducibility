@@ -1,0 +1,26 @@
+Package: rrtoolsmagic
+Title: What the Package Does (One Line, Title Case)
+Version: 0.0.0.9000
+Authors@R:
+    person(given = "First",
+           family = "Last",
+           role = c("aut", "cre"),
+           email = "first.last@example.com")
+Description: What the package does (one paragraph)
+License: MIT + file LICENSE
+ByteCompile: true
+Encoding: UTF-8
+LazyData: true
+Imports: bookdown (>= 0.10),
+    broom (>= 0.5.2),
+    devtools (>= 2.0.2),
+    ggplot2 (>= 3.1.1),
+    ggridges (>= 0.5.1),
+    git2r (>= 0.25.2),
+    here (>= 0.1),
+    huxtable (>= 4.5.0),
+    knitr (>= 1.22),
+    lubridate (>= 1.7.4),
+    scales (>= 1.0.0.9000),
+    tidyverse (>= 1.2.1)
+RoxygenNote: 6.1.1

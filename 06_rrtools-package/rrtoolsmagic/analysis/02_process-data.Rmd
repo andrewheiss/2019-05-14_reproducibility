@@ -1,0 +1,39 @@
+---
+title: "Clean and process data"
+author: "Andrew Heiss"
+date: "Last run: `r format(Sys.time(), '%F')`"
+output: 
+  html_document:
+    code_folding: show
+---
+
+# Data cleaning
+
+This data came from the Dark Sky API. Here I load the raw data and make some adjustments to it:
+
+- Make `Month` and `Day` columns that are human-readable ordered factors
+- Scale up some of the variables so that they are on a 0-100 scale instead of 0-1
+
+I save the clean version of the data to `data/provo_weather_2017_clean.rds` so it can be used elsewhere in this project.
+
+```{r load-libraries-clean-data, warning=FALSE, message=FALSE}
+# Load libraries
+library(tidyverse)
+library(lubridate)
+library(here)
+
+# Load data
+weather_provo_raw <- read_csv(here("analysis", "data", 
+                                   "raw_data", "provo_weather_2017.csv"))
+
+weather_provo_2017 <- weather_provo_raw %>% 
+  mutate(Month = month(date, label = TRUE, abbr = FALSE),
+         Day = wday(date, label = TRUE, abbr = FALSE)) %>% 
+  mutate(humidity_scaled = humidity * 100,
+         moonPhase_scaled = moonPhase * 100,
+         precipProbability_scaled = precipProbability * 100,
+         cloudCover_scaled = cloudCover * 100)
+
+saveRDS(weather_provo_2017, here("analysis", "data", 
+                                 "derived_data", "provo_weather_2017_clean.rds"))
+```
