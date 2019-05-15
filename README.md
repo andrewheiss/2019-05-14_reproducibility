@@ -5,17 +5,42 @@
 University  
 May 14, 2019 • Utah County R Users Group
 
+-----
+
+  - [Slides](#slides)
+  - [General resources for
+    reproducibility](#general-resources-for-reproducibility)
+  - [Example methods](#example-methods)
+      - [Code only](#code-only)
+      - [Code and data](#code-and-data)
+      - [Code and data + Makefile](#code-and-data--makefile)
+      - [R Markdown report](#r-markdown-report)
+      - [R Markdown website](#r-markdown-website)
+      - [`rrtools`](#rrtools)
+      - [`renv`](#renv)
+      - [Docker](#docker)
+      - [Binder](#binder)
+
+-----
+
 # Slides
 
-This R Markdown file [is available on
-GitHub](https://github.com/andrewheiss/talks/tree/master/2018-07-11_utah-rug-dataviz).
-
 [Download the slides from today’s
-talk](presentation/andrew-heiss_2018-07-11_utah-rug-dataviz.pdf)
+talk](presentation/andrew-heiss_2019-05-14_utah-county-rug_reproducibility.pdf)
+
+<img src="presentation/slides-thumb.png" width="75%" style="display: block; margin: auto;" />
 
 # General resources for reproducibility
 
-  - 
+  - [The National Academies of Science’s recommendations for
+    reproducibility](http://www8.nationalacademies.org/onpinews/newsitem.aspx?RecordID=25303)
+  - Karl Broman’s [tutorials on initial steps toward reproducible
+    research](http://kbroman.org/steps2rr/)
+  - Karl Broman’s talk [“Steps toward reproducible
+    research”](https://github.com/kbroman/Talk_RRBoston2019)
+  - Kirstie Whitaker’s [“A how to guide to reproducible
+    research”](https://figshare.com/articles/A_how_to_guide_to_reproducible_research/5886475)
+
 # Example methods
 
 Examples of each of these are included in this repository. Click on the
@@ -353,7 +378,9 @@ Here’s the tl;dr version:
 
 That’s all\!
 
-How to use this example:
+How to use this example (*this example actually lives in a [separate
+GitHub repository](https://github.com/andrewheiss/binder-example) so
+that it can work with Binder*):
 
   - Go to
     <https://mybinder.org/v2/gh/andrewheiss/binder-example/master?urlpath=rstudio>
